@@ -1,0 +1,7 @@
+{
+  "name": "kalori_fadil",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
