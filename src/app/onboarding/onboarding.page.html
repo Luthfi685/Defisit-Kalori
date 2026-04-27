@@ -1,0 +1,199 @@
+<ion-content class="onboarding-content">
+  <!-- Background Decorations -->
+  <div class="bg-circle c1"></div>
+  <div class="bg-circle c2"></div>
+  <div class="bg-circle c3"></div>
+
+  <div class="onboarding-wrapper">
+    <!-- Logo & Title -->
+    <div class="header-section">
+      <div class="app-logo"><ion-icon name="fitness-outline"></ion-icon></div>
+      <h1 class="app-name">KalorIku</h1>
+      <p class="app-tagline">Diet Cerdas, Badan Ideal</p>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-bar-container">
+      <div class="progress-track">
+        <div class="progress-fill" [style.width.%]="(step / totalSteps) * 100"></div>
+      </div>
+      <p class="step-label">Langkah {{ step }} dari {{ totalSteps }}</p>
+    </div>
+
+    <!-- ===================== STEP 1: BIODATA ===================== -->
+    <div class="step-card" *ngIf="step === 1">
+      <h2 class="step-title">Hai, Kenalan Dulu Yuk!</h2>
+      <p class="step-subtitle">Ceritain sedikit tentang dirimu</p>
+
+      <div class="form-group">
+        <label class="form-label">Nama Kamu</label>
+        <div class="input-wrapper">
+          <span class="input-icon">👤</span>
+          <input type="text" class="form-input" placeholder="Nama kamu..." [(ngModel)]="nama" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Jenis Kelamin</label>
+        <div class="gender-selector">
+          <button class="gender-btn" [class.active]="gender === 'pria'" (click)="gender = 'pria'">
+            <span class="gender-icon"><ion-icon name="man-outline"></ion-icon></span>
+            <span>Pria</span>
+          </button>
+          <button class="gender-btn" [class.active]="gender === 'wanita'" (click)="gender = 'wanita'">
+            <span class="gender-icon"><ion-icon name="woman-outline"></ion-icon></span>
+            <span>Wanita</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Umur</label>
+        <div class="number-input-group">
+          <button class="num-btn" (click)="umur = umur > 10 ? umur - 1 : umur">−</button>
+          <div class="num-display">{{ umur }} <span class="num-unit">tahun</span></div>
+          <button class="num-btn" (click)="umur = umur < 100 ? umur + 1 : umur">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== STEP 2: DATA FISIK ===================== -->
+    <div class="step-card" *ngIf="step === 2">
+      <h2 class="step-title">Data Fisik Kamu</h2>
+      <p class="step-subtitle">Untuk menghitung kebutuhan kalorimu</p>
+
+      <div class="form-group">
+        <label class="form-label">Berat Badan Sekarang</label>
+        <div class="slider-group">
+          <div class="slider-value">{{ beratBadan }} <span class="num-unit">kg</span></div>
+          <input type="range" class="form-slider" min="30" max="200" [(ngModel)]="beratBadan" />
+          <div class="slider-range"><span>30</span><span>200 kg</span></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tinggi Badan</label>
+        <div class="slider-group">
+          <div class="slider-value">{{ tinggiBadan }} <span class="num-unit">cm</span></div>
+          <input type="range" class="form-slider" min="100" max="220" [(ngModel)]="tinggiBadan" />
+          <div class="slider-range"><span>100</span><span>220 cm</span></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Berat Target</label>
+        <div class="slider-group">
+          <div class="slider-value">{{ beratTarget }} <span class="num-unit">kg</span></div>
+          <input type="range" class="form-slider" min="30" max="200" [(ngModel)]="beratTarget" />
+          <div class="slider-range"><span>30</span><span>200 kg</span></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Level Aktivitas</label>
+        <div class="activity-grid">
+          <button *ngFor="let act of activityLevels" class="activity-btn"
+            [class.active]="levelAktivitas === act.value"
+            (click)="levelAktivitas = act.value">
+            <ion-icon [name]="act.icon" class="act-icon"></ion-icon>
+            <span class="act-label">{{ act.label }}</span>
+            <span class="act-desc">{{ act.desc }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Target Defisit Kalori / Hari</label>
+        <div class="deficit-selector">
+          <button class="deficit-btn" [class.active]="targetDefisit === 250" (click)="targetDefisit = 250">
+            <span class="def-amount">-250</span>
+            <span class="def-label">Lambat & Aman</span>
+          </button>
+          <button class="deficit-btn" [class.active]="targetDefisit === 500" (click)="targetDefisit = 500">
+            <span class="def-amount">-500</span>
+            <span class="def-label">Normal 👍</span>
+          </button>
+          <button class="deficit-btn" [class.active]="targetDefisit === 750" (click)="targetDefisit = 750">
+            <span class="def-amount">-750</span>
+            <span class="def-label">Agresif</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== STEP 3: HASIL KALKULASI ===================== -->
+    <div class="step-card" *ngIf="step === 3">
+      <h2 class="step-title">Rencana Dietmu</h2>
+      <p class="step-subtitle">Ini hasilnya, {{ nama }}!</p>
+
+      <div class="result-cards">
+        <div class="result-item main-result">
+          <div class="result-icon"><ion-icon name="flame-outline"></ion-icon></div>
+          <div class="result-info">
+            <div class="result-value">{{ targetKalori }}</div>
+            <div class="result-label">Target Kalori / Hari</div>
+          </div>
+        </div>
+
+        <div class="result-row">
+          <div class="result-item mini">
+            <div class="result-icon">🥩</div>
+            <div class="result-value-sm">{{ targetProtein }}g</div>
+            <div class="result-label-sm">Protein</div>
+          </div>
+          <div class="result-item mini">
+            <div class="result-icon">🥑</div>
+            <div class="result-value-sm">{{ targetLemak }}g</div>
+            <div class="result-label-sm">Lemak</div>
+          </div>
+          <div class="result-item mini">
+            <div class="result-icon">🍚</div>
+            <div class="result-value-sm">{{ targetKarbo }}g</div>
+            <div class="result-label-sm">Karbo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-breakdown">
+        <div class="breakdown-row">
+          <span>BMR (Basic)</span>
+          <span class="breakdown-value">{{ bmr }} kkal</span>
+        </div>
+        <div class="breakdown-row">
+          <span>TDEE ({{ getActivityLabel() }})</span>
+          <span class="breakdown-value">{{ tdee }} kkal</span>
+        </div>
+        <div class="breakdown-row deficit-row">
+          <span>Defisit Target</span>
+          <span class="breakdown-value deficit">-{{ targetDefisit }} kkal</span>
+        </div>
+        <div class="breakdown-row target-row">
+          <span><strong>Target Akhir</strong></span>
+          <span class="breakdown-value target">= {{ targetKalori }} kkal</span>
+        </div>
+        <div class="breakdown-row" *ngIf="getEstimatedWeeks() > 0">
+          <span>Estimasi Capai Goal</span>
+          <span class="breakdown-value">~{{ getEstimatedWeeks() }} minggu</span>
+        </div>
+      </div>
+
+      <p class="disclaimer">* Angka ini adalah estimasi berdasarkan formula Mifflin-St Jeor. Sesuaikan dengan kondisi tubuhmu.</p>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+      <button class="btn-back" *ngIf="step > 1" (click)="prevStep()">
+        ← Kembali
+      </button>
+      <button class="btn-next" *ngIf="step < totalSteps"
+        [disabled]="(step === 1 && !isStep1Valid()) || (step === 2 && !isStep2Valid())"
+        (click)="nextStep()">
+        Lanjut →
+      </button>
+      <button class="btn-start" *ngIf="step === totalSteps" (click)="saveProfile()">
+        Mulai Diet!
+      </button>
+
+    </div>
+  </div>
+</ion-content>

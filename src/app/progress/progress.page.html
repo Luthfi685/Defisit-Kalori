@@ -1,0 +1,155 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="page-toolbar">
+    <h2 class="page-title-static">Progres Diet</h2>
+    <ion-buttons slot="end">
+      <ion-button (click)="exportLaporan()" color="primary">
+        <ion-icon name="share-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="progress-content">
+
+  <!-- Stats Overview -->
+  <div class="stats-row">
+    <div class="stat-card green">
+      <div class="stat-icon"><ion-icon name="calendar-outline"></ion-icon></div>
+      <div class="stat-val">{{ totalDaysTracked }}</div>
+      <div class="stat-label">Hari Tracking</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-icon"><ion-icon name="flame-outline"></ion-icon></div>
+      <div class="stat-val">{{ streakDays }}</div>
+      <div class="stat-label">Hari Beruntun</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-icon"><ion-icon name="trending-down-outline"></ion-icon></div>
+      <div class="stat-val">{{ avgKaloriHarian }}</div>
+      <div class="stat-label">Rata-rata Kkal</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-icon"><ion-icon name="scale-outline"></ion-icon></div>
+      <div class="stat-val">{{ turunBerat > 0 ? '-' : '' }}{{ turunBerat }} kg</div>
+      <div class="stat-label">Turun Berat</div>
+    </div>
+  </div>
+
+  <!-- ===== GRAFIK ===== -->
+  <div class="section-card chart-container-root">
+    <!-- Mode Toggle -->
+    <div class="chart-controls">
+      <div class="chart-toggle">
+        <button class="toggle-btn" [class.active]="chartMode === 'kalori'"
+          (click)="chartMode = 'kalori'; loadData()">Kalori</button>
+        <button class="toggle-btn" [class.active]="chartMode === 'protein'"
+          (click)="chartMode = 'protein'; loadData()">Protein</button>
+        <button class="toggle-btn" [class.active]="chartMode === 'lemak'"
+          (click)="chartMode = 'lemak'; loadData()">Lemak</button>
+        <button class="toggle-btn" [class.active]="chartMode === 'karbo'"
+          (click)="chartMode = 'karbo'; loadData()">Karbo</button>
+        <button class="toggle-btn" [class.active]="chartMode === 'berat'"
+          (click)="chartMode = 'berat'; loadData()">Berat</button>
+      </div>
+      <div class="period-toggle">
+        <button class="period-btn" [class.active]="period === 7"
+          (click)="period = 7; loadData()">7H</button>
+        <button class="period-btn" [class.active]="period === 14"
+          (click)="period = 14; loadData()">14H</button>
+        <button class="period-btn" [class.active]="period === 30"
+          (click)="period = 30; loadData()">30H</button>
+      </div>
+    </div>
+
+    <!-- Chart.js Canvas -->
+    <div class="chart-container" style="position: relative; height: 250px; width: 100%; padding: 10px;">
+      <div *ngIf="isChartEmpty" class="empty-chart" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10;">
+        <div class="empty-chart-icon"><ion-icon name="stats-chart-outline"></ion-icon></div>
+        <p>Data grafik kosong</p>
+        <span class="empty-sub">Batang akan muncul saat ada catatan makan</span>
+      </div>
+      <canvas id="progressChart"></canvas>
+    </div>
+
+    <!-- Chart Legend -->
+    <div class="chart-legend" *ngIf="chartMode === 'kalori'">
+      <div class="legend-item"><div class="legend-dot" style="background: #10b981"></div><span>Aman</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background: #f59e0b"></div><span>Waspada</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background: #ef4444"></div><span>Lebih</span></div>
+    </div>
+  </div>
+
+  <!-- ===== RATA-RATA MAKRO ===== -->
+  <div class="section-card">
+    <h3 class="section-title">Rata-rata Harian ({{ period }} hari)</h3>
+    <div class="macro-avg-grid">
+      <div class="macro-avg-item protein-bg">
+        <div class="avg-icon"><ion-icon name="nutrition-outline"></ion-icon></div>
+        <div class="avg-val">{{ avgProtein }}g</div>
+        <div class="avg-lbl">Protein</div>
+        <div class="avg-target">Target: {{ profile?.targetProtein || 0 }}g</div>
+      </div>
+      <div class="macro-avg-item lemak-bg">
+        <div class="avg-icon"><ion-icon name="water-outline"></ion-icon></div>
+        <div class="avg-val">{{ avgLemak }}g</div>
+        <div class="avg-lbl">Lemak</div>
+        <div class="avg-target">Target: {{ profile?.targetLemak || 0 }}g</div>
+      </div>
+      <div class="macro-avg-item karbo-bg">
+        <div class="avg-icon"><ion-icon name="leaf-outline"></ion-icon></div>
+        <div class="avg-val">{{ avgKarbo }}g</div>
+        <div class="avg-lbl">Karbo</div>
+        <div class="avg-target">Target: {{ profile?.targetKarbo || 0 }}g</div>
+      </div>
+      <div class="macro-avg-item serat-bg">
+        <div class="avg-icon"><ion-icon name="infinite-outline"></ion-icon></div>
+        <div class="avg-val">{{ avgSerat }}g</div>
+        <div class="avg-lbl">Serat</div>
+        <div class="avg-target">Target: 25g</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TABEL RIWAYAT ===== -->
+  <div class="section-card">
+    <h3 class="section-title">Riwayat Harian ({{ period }} hari terakhir)</h3>
+
+    <div class="history-scroll">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Kalori</th>
+            <th>P</th>
+            <th>L</th>
+            <th>K</th>
+            <th>BB</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of recentLogs">
+            <td class="date-cell">
+              <div class="date-text">{{ getLabelDate(s) }}</div>
+              <div class="date-ago">{{ getDaysAgo(s.tanggal) }}</div>
+            </td>
+            <td>
+              <span [style.color]="profile && s.totalKalori > profile.targetKalori ? '#ef4444' : '#10b981'"
+                    style="font-weight: 800;">
+                {{ s.totalKalori | number:'1.0-0' }}
+              </span>
+            </td>
+            <td class="macro-cell protein-color">{{ s.totalProtein | number:'1.0-0' }}g</td>
+            <td class="macro-cell lemak-color">{{ s.totalLemak | number:'1.0-0' }}g</td>
+            <td class="macro-cell karbo-color">{{ s.totalKarbo | number:'1.0-0' }}g</td>
+            <td style="font-weight: 800; color: #3b82f6;">{{ s.beratBadan ? s.beratBadan + ' kg' : '-' }}</td>
+          </tr>
+          <tr *ngIf="recentLogs.length === 0">
+            <td colspan="6" style="text-align: center; padding: 20px; color: #94a3b8;">Belum ada riwayat</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
+</ion-content>

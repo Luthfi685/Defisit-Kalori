@@ -1,0 +1,207 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="dash-toolbar">
+    <div class="dash-header">
+      <div class="header-left">
+        <p class="greeting">{{ getGreeting() }}, {{ profile?.nama }}!</p>
+        <p class="date-label">{{ todayDisplay }}</p>
+      </div>
+      <div class="header-right">
+        <button class="weight-btn" (click)="showBeratInput = !showBeratInput">
+          <span class="weight-icon"><ion-icon name="scale-outline"></ion-icon></span>
+          <span class="weight-val">{{ beratHariIni ? beratHariIni + ' kg' : 'Isi BB' }}</span>
+        </button>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="dashboard-content">
+  <!-- Input Berat Badan -->
+  <div class="weight-input-panel" *ngIf="showBeratInput">
+    <p class="weight-input-label">Berat badan hari ini (kg):</p>
+    <div class="weight-input-row">
+      <input type="number" class="weight-input-field" placeholder="misal: 68.5" [(ngModel)]="inputBerat" />
+      <button class="weight-save-btn" (click)="saveBerat()">Simpan</button>
+    </div>
+  </div>
+
+  <!-- Status Message -->
+  <div class="status-banner">
+    <p class="status-text">{{ getStatusMessage() }}</p>
+  </div>
+
+  <!-- ======= HERO KALORI RING ======= -->
+  <div class="calorie-card">
+    <div class="calorie-ring-container">
+      <svg viewBox="0 0 120 120" class="calorie-ring">
+        <circle cx="60" cy="60" r="50" class="ring-bg" />
+        <circle cx="60" cy="60" r="50" class="ring-fill"
+          [style.stroke]="getProgressColor()"
+          [style.stroke-dashoffset]="314 - (314 * kaloriProgress / 100)"
+          stroke-dasharray="314" />
+      </svg>
+      <div class="ring-center">
+        <div class="ring-value">{{ kaloriSisa }}</div>
+        <div class="ring-label">kkal sisa</div>
+      </div>
+    </div>
+    <div class="calorie-stats">
+      <div class="cal-stat">
+        <div class="cal-stat-icon"><ion-icon name="flame-outline"></ion-icon></div>
+        <div class="cal-stat-val">{{ profile?.targetKalori || 0 }}</div>
+        <div class="cal-stat-lbl">Target</div>
+      </div>
+      <div class="cal-stat">
+        <div class="cal-stat-icon"><ion-icon name="restaurant-outline"></ion-icon></div>
+        <div class="cal-stat-val">{{ kaloriMasuk }}</div>
+        <div class="cal-stat-lbl">Masuk</div>
+      </div>
+      <div class="cal-stat">
+        <div class="cal-stat-icon"><ion-icon name="barbell-outline"></ion-icon></div>
+        <div class="cal-stat-val">0</div>
+        <div class="cal-stat-lbl">Olahraga</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= MAKRO PROGRESS ======= -->
+  <div class="section-card">
+    <h3 class="section-title">Zat Gizi Makro</h3>
+    <div class="macro-list">
+      <div class="macro-item">
+        <div class="macro-header">
+          <span class="macro-name">Protein</span>
+          <span class="macro-val">{{ todaySummary?.totalProtein | number:'1.0-0' }}g / {{ profile?.targetProtein }}g</span>
+        </div>
+        <div class="macro-bar-bg">
+          <div class="macro-bar protein" [style.width.%]="proteinProgress"></div>
+        </div>
+      </div>
+      <div class="macro-item">
+        <div class="macro-header">
+          <span class="macro-name">Lemak</span>
+          <span class="macro-val">{{ todaySummary?.totalLemak | number:'1.0-0' }}g / {{ profile?.targetLemak }}g</span>
+        </div>
+        <div class="macro-bar-bg">
+          <div class="macro-bar lemak" [style.width.%]="lemakProgress"></div>
+        </div>
+      </div>
+      <div class="macro-item">
+        <div class="macro-header">
+          <span class="macro-name">Karbo</span>
+          <span class="macro-val">{{ todaySummary?.totalKarbo | number:'1.0-0' }}g / {{ profile?.targetKarbo }}g</span>
+        </div>
+        <div class="macro-bar-bg">
+          <div class="macro-bar karbo" [style.width.%]="karboProgress"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= MIKRO GIZI ======= -->
+  <div class="section-card">
+    <h3 class="section-title">Zat Gizi Mikro</h3>
+
+    <!-- Peringatan gizi dinamis -->
+    <div class="micro-warnings" *ngIf="getMicroWarnings().length > 0 && kaloriMasuk > 0">
+      <div class="micro-warning-item" *ngFor="let w of getMicroWarnings()">{{ w }}</div>
+    </div>
+
+    <div class="micro-list">
+      <!-- Kalsium -->
+      <div class="micro-bar-item">
+        <div class="micro-bar-header">
+          <span class="micro-bar-name">Kalsium</span>
+          <span class="micro-bar-badge" [style.background]="getMicroStatus(kalsiumProgress).color">
+            {{ getMicroStatus(kalsiumProgress).label }}
+          </span>
+        </div>
+        <div class="micro-bar-row">
+          <div class="micro-bar-bg">
+            <div class="micro-bar-fill"
+              [style.width.%]="kalsiumProgress"
+              [style.background]="getMicroStatus(kalsiumProgress).color">
+            </div>
+          </div>
+          <span class="micro-bar-pct">{{ kalsiumProgress }}%</span>
+        </div>
+        <div class="micro-bar-vals">
+          {{ todaySummary?.totalKalsium | number:'1.0-0' }} mg / {{ profile?.targetKalsium || 1000 }} mg
+        </div>
+      </div>
+
+      <!-- Zat Besi -->
+      <div class="micro-bar-item">
+        <div class="micro-bar-header">
+          <span class="micro-bar-name">Zat Besi</span>
+          <span class="micro-bar-badge" [style.background]="getMicroStatus(besiProgress).color">
+            {{ getMicroStatus(besiProgress).label }}
+          </span>
+        </div>
+        <div class="micro-bar-row">
+          <div class="micro-bar-bg">
+            <div class="micro-bar-fill"
+              [style.width.%]="besiProgress"
+              [style.background]="getMicroStatus(besiProgress).color">
+            </div>
+          </div>
+          <span class="micro-bar-pct">{{ besiProgress }}%</span>
+        </div>
+        <div class="micro-bar-vals">
+          {{ todaySummary?.totalBesi | number:'1.1-1' }} mg / {{ profile?.targetBesi || 18 }} mg
+        </div>
+      </div>
+
+      <!-- Serat -->
+      <div class="micro-bar-item">
+        <div class="micro-bar-header">
+          <span class="micro-bar-name">Serat</span>
+          <span class="micro-bar-badge" [style.background]="getMicroStatus(seratProgress).color">
+            {{ getMicroStatus(seratProgress).label }}
+          </span>
+        </div>
+        <div class="micro-bar-row">
+          <div class="micro-bar-bg">
+            <div class="micro-bar-fill"
+              [style.width.%]="seratProgress"
+              [style.background]="getMicroStatus(seratProgress).color">
+            </div>
+          </div>
+          <span class="micro-bar-pct">{{ seratProgress }}%</span>
+        </div>
+        <div class="micro-bar-vals">
+          {{ todaySummary?.totalSerat | number:'1.1-1' }} g / {{ profile?.targetSerat || 25 }} g
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= LOG MAKANAN PER WAKTU ======= -->
+  <div class="section-card" *ngFor="let waktu of waktuMakan">
+    <div class="meal-header">
+      <h3 class="section-title">{{ waktuLabel[waktu] }}</h3>
+      <span class="meal-cal">{{ getLogsByWaktu(waktu) | sumKalori }} kkal</span>
+    </div>
+    
+    <div *ngIf="getLogsByWaktu(waktu).length === 0" class="empty-meal">
+      <p>Belum ada catatan</p>
+    </div>
+
+    <div class="food-list">
+      <div class="food-log-item" *ngFor="let log of getLogsByWaktu(waktu)">
+        <div class="food-log-info">
+          <div class="food-log-name">{{ log.nama }}</div>
+          <div class="food-log-macros">
+            P: {{ log.protein | number:'1.0-0' }}g · L: {{ log.lemak | number:'1.0-0' }}g · K: {{ log.karbo | number:'1.0-0' }}g
+          </div>
+        </div>
+        <div class="food-log-right">
+          <div class="food-log-cal">{{ log.kalori | number:'1.0-0' }} kkal</div>
+          <button class="delete-btn" (click)="deleteLog(log)"><ion-icon name="close-outline"></ion-icon></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
+</ion-content>

@@ -1,0 +1,21 @@
+[
+  { "id": "l001", "nama": "Nasi Putih", "kalori": 130, "protein": 2.7, "lemak": 0.3, "karbo": 28, "serat": 0.4, "kalsium": 10, "besi": 0.2, "isCustom": false, "brand": "Lokal" },
+  { "id": "l002", "nama": "Nasi Goreng Ayam", "kalori": 250, "protein": 12, "lemak": 9, "karbo": 30, "serat": 1.2, "kalsium": 20, "besi": 1.5, "isCustom": false, "brand": "Lokal" },
+  { "id": "l003", "nama": "Ayam Goreng (Dada)", "kalori": 260, "protein": 25, "lemak": 15, "karbo": 0, "serat": 0, "kalsium": 15, "besi": 1.2, "isCustom": false, "brand": "Lokal" },
+  { "id": "l004", "nama": "Tempe Goreng", "kalori": 225, "protein": 18, "lemak": 15, "karbo": 8, "serat": 4.5, "kalsium": 110, "besi": 2.5, "isCustom": false, "brand": "Lokal" },
+  { "id": "l005", "nama": "Tahu Goreng", "kalori": 175, "protein": 15, "lemak": 12, "karbo": 4, "serat": 1.2, "kalsium": 350, "besi": 4.5, "isCustom": false, "brand": "Lokal" },
+  { "id": "l006", "nama": "Telur Dadar", "kalori": 154, "protein": 12.4, "lemak": 10.8, "karbo": 1.2, "serat": 0, "kalsium": 50, "besi": 1.8, "isCustom": false, "brand": "Lokal" },
+  { "id": "l007", "nama": "Sate Ayam (5 tusuk)", "kalori": 225, "protein": 22, "lemak": 14, "karbo": 5, "serat": 0.5, "kalsium": 25, "besi": 1.5, "isCustom": false, "brand": "Lokal" },
+  { "id": "l008", "nama": "Bakso Sapi Semangkok", "kalori": 325, "protein": 18, "lemak": 15, "karbo": 30, "serat": 1.5, "kalsium": 35, "besi": 2.2, "isCustom": false, "brand": "Lokal" },
+  { "id": "l010", "nama": "Bubur Ayam", "kalori": 155, "protein": 10, "lemak": 4, "karbo": 20, "serat": 0.8, "kalsium": 15, "besi": 1.1, "isCustom": false, "brand": "Lokal" },
+  { "id": "l011", "nama": "Gado-Gado", "kalori": 132, "protein": 7, "lemak": 8, "karbo": 9, "serat": 2.5, "kalsium": 160, "besi": 2.2, "isCustom": false, "brand": "Lokal" },
+  { "id": "l012", "nama": "Soto Ayam", "kalori": 120, "protein": 12, "lemak": 5, "karbo": 8, "serat": 0.5, "kalsium": 25, "besi": 1.2, "isCustom": false, "brand": "Lokal" },
+  { "id": "l013", "nama": "Ketoprak", "kalori": 185, "protein": 8, "lemak": 10, "karbo": 16, "serat": 1.8, "kalsium": 120, "besi": 1.5, "isCustom": false, "brand": "Lokal" },
+  { "id": "l014", "nama": "Pecel Lele", "kalori": 230, "protein": 18, "lemak": 16, "karbo": 0, "serat": 0, "kalsium": 30, "besi": 1.8, "isCustom": false, "brand": "Lokal" },
+  { "id": "l015", "nama": "Martabak Telur", "kalori": 210, "protein": 10, "lemak": 14, "karbo": 12, "serat": 0.5, "kalsium": 40, "besi": 1.2, "isCustom": false, "brand": "Lokal" },
+  { "id": "l016", "nama": "Sayur Asem", "kalori": 45, "protein": 2, "lemak": 0.5, "karbo": 9, "serat": 2.0, "kalsium": 35, "besi": 0.8, "isCustom": false, "brand": "Lokal" },
+  { "id": "l017", "nama": "Rendang Sapi", "kalori": 195, "protein": 18, "lemak": 13, "karbo": 2, "serat": 0.5, "kalsium": 20, "besi": 2.5, "isCustom": false, "brand": "Lokal" },
+  { "id": "l018", "nama": "Sambal Goreng Kentang", "kalori": 125, "protein": 3, "lemak": 6, "karbo": 15, "serat": 1.5, "kalsium": 25, "besi": 1.1, "isCustom": false, "brand": "Lokal" },
+  { "id": "l019", "nama": "Urap Sayur", "kalori": 95, "protein": 4, "lemak": 5, "karbo": 10, "serat": 3.5, "kalsium": 140, "besi": 1.8, "isCustom": false, "brand": "Lokal" },
+  { "id": "l020", "nama": "Indomie Goreng", "kalori": 380, "protein": 8, "lemak": 14, "karbo": 54, "serat": 2, "kalsium": 20, "besi": 4, "isCustom": false, "brand": "Indofood" }
+]

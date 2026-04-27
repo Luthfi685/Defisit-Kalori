@@ -1,0 +1,183 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="page-toolbar">
+    <div class="profile-header-bar">
+      <h2 class="page-title-static">Profil Saya</h2>
+      <button class="edit-toggle-btn" *ngIf="!isEditing" (click)="startEdit()">
+        <ion-icon name="create-outline"></ion-icon> Edit
+      </button>
+      <div class="edit-actions" *ngIf="isEditing">
+        <button class="cancel-btn" (click)="cancelEdit()">Batal</button>
+        <button class="save-profile-btn" (click)="saveEdit()">Simpan</button>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="profile-content">
+  <div *ngIf="profile">
+
+    <!-- Avatar & Name -->
+    <div class="profile-hero">
+      <div class="profile-avatar">{{ profile.nama.charAt(0).toUpperCase() }}</div>
+      <h3 class="profile-name">{{ profile.nama }}</h3>
+      <p class="profile-gender">
+        <ion-icon [name]="profile.gender === 'pria' ? 'man-outline' : 'woman-outline'"></ion-icon>
+        {{ profile.gender === 'pria' ? 'Pria' : 'Wanita' }} · {{ profile.umur }} tahun
+      </p>
+      <p class="start-date">Mulai diet: {{ profile.tanggalMulai }}</p>
+    </div>
+
+    <!-- Achievement Stats -->
+    <div class="achievement-row">
+      <div class="achiev-card">
+        <div class="achiev-icon"><ion-icon name="calendar-outline"></ion-icon></div>
+        <div class="achiev-val">{{ daysTracked }}</div>
+        <div class="achiev-label">Hari Tracking</div>
+      </div>
+      <div class="achiev-card">
+        <div class="achiev-icon"><ion-icon name="restaurant-outline"></ion-icon></div>
+        <div class="achiev-val">{{ totalCaloriesLogged }}</div>
+        <div class="achiev-label">Catatan Makan</div>
+      </div>
+      <div class="achiev-card">
+        <div class="achiev-icon"><ion-icon name="hourglass-outline"></ion-icon></div>
+        <div class="achiev-val">{{ getEstimatedWeeks() }}</div>
+        <div class="achiev-label">Minggu Sisa</div>
+      </div>
+    </div>
+
+    <!-- BMI Card -->
+    <div class="bmi-card-v2">
+      <div class="bmi-header">
+        <span class="bmi-title"><ion-icon name="scale-outline"></ion-icon> Indeks Massa Tubuh (BMI)</span>
+        <span class="bmi-category-badge" [style.background]="bmiColor">{{ bmiCategory }}</span>
+      </div>
+      <div class="bmi-main">
+        <div class="bmi-num" [style.color]="bmiColor">{{ bmi }}</div>
+        <div class="bmi-progress-container">
+          <div class="bmi-progress-bar">
+             <div class="bmi-marker" [style.left.%]="(bmi/40)*100"></div>
+          </div>
+        </div>
+      </div>
+      <div class="bmi-scale-grid">
+        <div class="scale-box blue"><span>&lt;18.5</span><span>Kurus</span></div>
+        <div class="scale-box green"><span>18.5-25</span><span>Ideal</span></div>
+        <div class="scale-box yellow"><span>25-30</span><span>Gemuk</span></div>
+        <div class="scale-box red"><span>&gt;30</span><span>Obesitas</span></div>
+      </div>
+    </div>
+
+    <!-- ========= VIEW MODE ========= -->
+    <div *ngIf="!isEditing">
+      <!-- Physical Data -->
+      <div class="section-card">
+        <h3 class="section-title">Data Fisik Sekarang</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-icon blue-bg"><ion-icon name="body-outline"></ion-icon></div>
+            <div class="info-val">{{ profile.beratBadan }} kg</div>
+            <div class="info-label">Berat Kini</div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon green-bg"><ion-icon name="resize-outline"></ion-icon></div>
+            <div class="info-val">{{ profile.tinggiBadan }} cm</div>
+            <div class="info-label">Tinggi</div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon orange-bg"><ion-icon name="flag-outline"></ion-icon></div>
+            <div class="info-val">{{ profile.beratTarget }} kg</div>
+            <div class="info-label">Target</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calorie Plan -->
+      <div class="section-card">
+        <h3 class="section-title">Ringkasan Metabolisme</h3>
+        <div class="plan-list">
+          <div class="plan-item">
+            <span>BMR (Basal Metabolic Rate)</span>
+            <span class="val">{{ profile.bmr }} kkal</span>
+          </div>
+          <div class="plan-item">
+            <span>TDEE (Daily Energy)</span>
+            <span class="val">{{ profile.tdee }} kkal</span>
+          </div>
+          <div class="plan-item highlight-plan">
+            <span class="lbl"><ion-icon name="flame"></ion-icon> Target Kalori Harian</span>
+            <span class="val">{{ profile.targetKalori }} kkal</span>
+          </div>
+          <div class="plan-item">
+            <span>Defisit Kalori</span>
+            <span class="val red-text">-{{ profile.targetDefisit }} kkal</span>
+          </div>
+        </div>
+
+        <div class="macro-summary-card">
+          <div class="ms-item">
+            <span class="ms-label">Protein</span>
+            <span class="ms-val">{{ profile.targetProtein }}g</span>
+          </div>
+          <div class="ms-item">
+            <span class="ms-label">Lemak</span>
+            <span class="ms-val">{{ profile.targetLemak }}g</span>
+          </div>
+          <div class="ms-item">
+            <span class="ms-label">Karbo</span>
+            <span class="ms-val">{{ profile.targetKarbo }}g</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========= EDIT MODE ========= -->
+    <div *ngIf="isEditing" class="edit-form">
+      <div class="section-card">
+        <h3 class="section-title">Update Profil</h3>
+
+        <div class="form-group-v2">
+          <label>Berat Badan (kg)</label>
+          <div class="input-with-unit">
+             <input type="number" [(ngModel)]="editData.beratBadan">
+             <span>kg</span>
+          </div>
+        </div>
+
+        <div class="form-group-v2">
+          <label>Tinggi Badan (cm)</label>
+          <div class="input-with-unit">
+             <input type="number" [(ngModel)]="editData.tinggiBadan">
+             <span>cm</span>
+          </div>
+        </div>
+
+        <div class="form-group-v2">
+          <label>Level Aktivitas</label>
+          <select [(ngModel)]="editData.levelAktivitas" class="modern-select">
+            <option *ngFor="let act of activityLevels" [value]="act.value">{{ act.label }}</option>
+          </select>
+        </div>
+
+        <div class="form-group-v2">
+          <label>Target Defisit</label>
+          <div class="deficit-chips">
+            <div class="d-chip" [class.active]="editData.targetDefisit === 250" (click)="editData.targetDefisit = 250">Lambat</div>
+            <div class="d-chip" [class.active]="editData.targetDefisit === 500" (click)="editData.targetDefisit = 500">Normal</div>
+            <div class="d-chip" [class.active]="editData.targetDefisit === 750" (click)="editData.targetDefisit = 750">Agresif</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset App -->
+    <div class="danger-zone" *ngIf="!isEditing">
+      <button class="btn-outline-danger" (click)="resetApp()">
+        <ion-icon name="trash-outline"></ion-icon> Reset Semua Data
+      </button>
+      <p class="hint">Tindakan ini tidak bisa dibatalkan.</p>
+    </div>
+
+  </div>
+  <div class="bottom-spacer"></div>
+</ion-content>

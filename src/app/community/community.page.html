@@ -1,0 +1,140 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="page-toolbar">
+    <h2 class="page-title-static">Komunitas</h2>
+    <ion-buttons slot="end">
+      <ion-button (click)="showAddForm = !showAddForm" [class.active]="showAddForm" class="add-post-btn">
+        <ion-icon [name]="showAddForm ? 'close-circle' : 'add-circle-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Form Tambah Post -->
+  <div class="add-form-container" *ngIf="showAddForm">
+    <div class="section-card">
+      <h3 class="section-title">Bagikan Pengalamanmu</h3>
+
+      <div class="form-group">
+        <label class="form-label">Judul Postingan</label>
+        <input type="text" [(ngModel)]="newPost.judul" class="form-input" placeholder="Tulis judul yang menarik...">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Kategori</label>
+        <div class="kategori-selector">
+          <div *ngFor="let f of filterOptions"
+               [class.active]="newPost.kategori === f.value"
+               (click)="newPost.kategori = f.value"
+               class="kat-chip"
+               [style.border-color]="getKategoriColor(f.value)">
+            {{f.label}}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Isi Cerita</label>
+        <textarea [(ngModel)]="newPost.isi" class="form-textarea" rows="4" placeholder="Tuliskan ceritamu di sini..."></textarea>
+      </div>
+
+      <button class="btn-primary full-width" (click)="submitPost()">Bagikan Sekarang</button>
+    </div>
+  </div>
+
+  <!-- Filter Chips -->
+  <div class="filter-wrapper">
+    <div class="filter-scroll">
+      <div *ngFor="let f of filters"
+           [class.active]="activeFilter === f.value"
+           (click)="activeFilter = f.value"
+           class="filter-chip">
+        {{f.label}}
+      </div>
+    </div>
+  </div>
+
+  <!-- Post Feed -->
+  <div class="feed-container">
+    <div *ngFor="let post of filteredPosts" class="post-card">
+      <div class="post-header">
+        <div class="post-meta">
+          <span class="post-category" [style.background]="getKategoriColor(post.kategori)">
+            {{ post.kategori | uppercase }}
+          </span>
+          <span class="post-date text-muted">{{ formatDate(post.tanggal) }}</span>
+        </div>
+      </div>
+
+      <h3 class="post-title">{{ post.judul }}</h3>
+      <p class="post-content">{{ post.isi }}</p>
+
+      <div class="post-footer">
+        <div class="post-author">
+          <div class="avatar">{{ post.penulis.charAt(0) }}</div>
+          <span class="author-name">{{ post.penulis }}</span>
+        </div>
+        <div class="post-actions">
+          <button class="like-btn" [class.liked]="post.isLiked" (click)="toggleLike(post)">
+            <ion-icon [name]="post.isLiked ? 'heart' : 'heart-outline'"></ion-icon>
+            <span>{{ post.likes }}</span>
+          </button>
+          <button class="comment-toggle-btn" [class.active]="expandedPostId === post.id"
+            (click)="toggleComments(post.id)">
+            <ion-icon name="chatbubble-outline"></ion-icon>
+            <span>{{ getCommentCount(post.id) }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== SEKSI KOMENTAR ===== -->
+      <div class="comments-section" *ngIf="expandedPostId === post.id">
+        <div class="comments-divider"></div>
+
+        <!-- Daftar komentar -->
+        <div class="comments-list">
+          <div *ngIf="getComments(post.id).length === 0" class="no-comments">
+            <span>Belum ada komentar. Jadilah yang pertama!</span>
+          </div>
+          <div class="comment-item" *ngFor="let c of getComments(post.id)">
+            <div class="comment-avatar">{{ c.penulis.charAt(0) }}</div>
+            <div class="comment-body">
+              <div class="comment-meta">
+                <span class="comment-author">{{ c.penulis }}</span>
+                <span class="comment-time">{{ formatCommentTime(c.timestamp) }}</span>
+              </div>
+              <p class="comment-text">{{ c.isi }}</p>
+            </div>
+            <button class="comment-delete-btn" (click)="deleteComment(c.id, post.id)"
+              *ngIf="c.penulis === (storage.getProfile()?.nama || 'Aku')">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- Input komentar baru -->
+        <div class="comment-input-row">
+          <input
+            type="text"
+            class="comment-input"
+            [(ngModel)]="newCommentText[post.id]"
+            placeholder="Tulis komentar..."
+            (keyup.enter)="submitComment(post.id)"
+          />
+          <button class="comment-send-btn" (click)="submitComment(post.id)">
+            <ion-icon name="send"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty Feed -->
+    <div *ngIf="filteredPosts.length === 0" class="empty-feed">
+      <div class="empty-icon"><ion-icon name="people-outline"></ion-icon></div>
+      <p>Belum ada postingan di kategori ini</p>
+      <span class="empty-sub">Jadilah yang pertama berbagi!</span>
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
+</ion-content>

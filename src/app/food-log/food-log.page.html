@@ -1,0 +1,63 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="page-toolbar">
+    <h2 class="page-title-static">Catat Manual</h2>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="search-container">
+    <div class="search-box-wrapper" style="border-bottom: none; padding-bottom: 0;">
+      <!-- Waktu Selector -->
+      <div class="waktu-selector">
+        <div *ngFor="let opt of waktuOptions"
+             [class.active]="selectedWaktu === opt.value"
+             (click)="selectedWaktu = opt.value"
+             class="waktu-chip">
+          {{opt.label}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="manual-container" style="animation: none;">
+    <div class="manual-form-card">
+      <div class="form-group">
+        <label>Apa yang Anda makan?</label>
+        <div class="input-with-icon">
+          <ion-icon name="restaurant-outline"></ion-icon>
+          <input type="text" [(ngModel)]="manualInput.nama" placeholder="Contoh: Nasi Goreng Gila">
+        </div>
+      </div>
+
+      <div class="macro-input-grid">
+        <div class="form-group">
+          <label>Energi (Kkal)</label>
+          <input type="number" [(ngModel)]="manualInput.kalori" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label>Protein (g)</label>
+          <input type="number" [(ngModel)]="manualInput.protein" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label>Lemak (g)</label>
+          <input type="number" [(ngModel)]="manualInput.lemak" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label>Karbohidrat (g)</label>
+          <input type="number" [(ngModel)]="manualInput.karbo" placeholder="0">
+        </div>
+      </div>
+
+      <p class="manual-hint">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        Lengkapi data nutrisi secara manual sesuai dengan makanan yang Anda konsumsi.
+      </p>
+    </div>
+
+    <div class="action-footer">
+      <button class="btn-save" style="border-radius: 16px;" (click)="simpanManual()">Simpan Log</button>
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
+</ion-content>
