@@ -67,7 +67,7 @@
         <div class="slider-group">
           <div class="slider-value">{{ beratBadan }} <span class="num-unit">kg</span></div>
           <input type="range" class="form-slider" min="30" max="200" [(ngModel)]="beratBadan" />
-          <div class="slider-range"><span>30</span><span>200 kg</span></div>
+          <div class="slider-range"><span>30 kg</span><span>200 kg</span></div>
         </div>
       </div>
 
@@ -76,7 +76,7 @@
         <div class="slider-group">
           <div class="slider-value">{{ tinggiBadan }} <span class="num-unit">cm</span></div>
           <input type="range" class="form-slider" min="100" max="220" [(ngModel)]="tinggiBadan" />
-          <div class="slider-range"><span>100</span><span>220 cm</span></div>
+          <div class="slider-range"><span>100 cm</span><span>220 cm</span></div>
         </div>
       </div>
 
@@ -85,7 +85,7 @@
         <div class="slider-group">
           <div class="slider-value">{{ beratTarget }} <span class="num-unit">kg</span></div>
           <input type="range" class="form-slider" min="30" max="200" [(ngModel)]="beratTarget" />
-          <div class="slider-range"><span>30</span><span>200 kg</span></div>
+          <div class="slider-range"><span>30 kg</span><span>200 kg</span></div>
         </div>
       </div>
 
@@ -96,8 +96,10 @@
             [class.active]="levelAktivitas === act.value"
             (click)="levelAktivitas = act.value">
             <ion-icon [name]="act.icon" class="act-icon"></ion-icon>
-            <span class="act-label">{{ act.label }}</span>
-            <span class="act-desc">{{ act.desc }}</span>
+            <div class="act-content">
+              <span class="act-label">{{ act.label }}</span>
+              <span class="act-desc">{{ act.desc }}</span>
+            </div>
           </button>
         </div>
       </div>
@@ -107,11 +109,11 @@
         <div class="deficit-selector">
           <button class="deficit-btn" [class.active]="targetDefisit === 250" (click)="targetDefisit = 250">
             <span class="def-amount">-250</span>
-            <span class="def-label">Lambat & Aman</span>
+            <span class="def-label">Lambat</span>
           </button>
           <button class="deficit-btn" [class.active]="targetDefisit === 500" (click)="targetDefisit = 500">
             <span class="def-amount">-500</span>
-            <span class="def-label">Normal 👍</span>
+            <span class="def-label">Normal</span>
           </button>
           <button class="deficit-btn" [class.active]="targetDefisit === 750" (click)="targetDefisit = 750">
             <span class="def-amount">-750</span>
@@ -128,7 +130,7 @@
 
       <div class="result-cards">
         <div class="result-item main-result">
-          <div class="result-icon"><ion-icon name="flame-outline"></ion-icon></div>
+          <div class="result-icon"><ion-icon name="flame"></ion-icon></div>
           <div class="result-info">
             <div class="result-value">{{ targetKalori }}</div>
             <div class="result-label">Target Kalori / Hari</div>
@@ -156,29 +158,26 @@
 
       <div class="calc-breakdown">
         <div class="breakdown-row">
-          <span>BMR (Basic)</span>
+          <span>BMR (Basic Metabol)</span>
           <span class="breakdown-value">{{ bmr }} kkal</span>
         </div>
         <div class="breakdown-row">
-          <span>TDEE ({{ getActivityLabel() }})</span>
+          <span>TDEE (Aktivitas)</span>
           <span class="breakdown-value">{{ tdee }} kkal</span>
         </div>
         <div class="breakdown-row deficit-row">
           <span>Defisit Target</span>
-          <span class="breakdown-value deficit">-{{ targetDefisit }} kkal</span>
+          <span class="breakdown-value">-{{ targetDefisit }} kkal</span>
         </div>
         <div class="breakdown-row target-row">
-          <span><strong>Target Akhir</strong></span>
-          <span class="breakdown-value target">= {{ targetKalori }} kkal</span>
-        </div>
-        <div class="breakdown-row" *ngIf="getEstimatedWeeks() > 0">
-          <span>Estimasi Capai Goal</span>
-          <span class="breakdown-value">~{{ getEstimatedWeeks() }} minggu</span>
+          <span>Target Akhir</span>
+          <span class="breakdown-value target">{{ targetKalori }} kkal</span>
         </div>
       </div>
 
-      <p class="disclaimer">* Angka ini adalah estimasi berdasarkan formula Mifflin-St Jeor. Sesuaikan dengan kondisi tubuhmu.</p>
+      <p class="disclaimer">* Angka ini adalah estimasi formula Mifflin-St Jeor. Sesuaikan dengan kondisi tubuhmu.</p>
     </div>
+
 
     <!-- Navigation Buttons -->
     <div class="nav-buttons">
